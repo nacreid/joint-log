@@ -1,0 +1,401 @@
+<!DOCTYPE html><html lang="en"><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#09090b"><title>Joint Log — Ion & Brit</title>
+<style>
+:root{--bg:#09090b;--b2:#18181b;--b3:#27272a;--bd:#27272a;--bds:#1f1f23;--tx:#fff;--dm:#a1a1aa;--mu:#71717a;--fa:#52525b;
+--em:#10b981;--eml:#6ee7b7;--emd:#047857;--ro:#fb7185;--rol:#fda4af;--rod:#9f1239;
+--ac:#10b981;--acl:#6ee7b7;--acd:#047857}
+body.p-brit{--ac:#fb7185;--acl:#fda4af;--acd:#9f1239}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%}
+body{background:var(--bg);color:var(--tx);font:14px/1.4 -apple-system,BlinkMacSystemFont,Segoe UI,Roboto,system-ui,sans-serif;overflow:hidden}
+button{background:none;border:0;color:inherit;font:inherit;cursor:pointer;text-align:left;padding:0}
+input,textarea{background:none;border:0;color:inherit;font:inherit;outline:none}
+#app{height:100dvh;height:100vh;display:flex;flex-direction:column}
+.hd{background:var(--bg);border-bottom:1px solid var(--bd);padding-top:env(safe-area-inset-top);flex-shrink:0;z-index:20}
+.ht{padding:9px 12px 8px}
+.hr1{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.htt{font-size:14px;font-weight:700;display:flex;align-items:center;gap:6px}
+.svb{font-size:10px;padding:2px 6px;border-radius:3px}
+.svb-ok{color:var(--acl);background:rgba(255,255,255,.05)}
+.hps{font-size:10px;color:var(--mu);text-transform:uppercase;letter-spacing:.5px;padding:4px 6px}
+.pt{display:flex;gap:6px;margin-bottom:8px}
+.pp{flex:1;text-align:center;padding:9px;border-radius:8px;border:1px solid var(--bd);background:var(--b2);font-size:13px;font-weight:700;letter-spacing:.04em;color:var(--mu)}
+.pp.on.ion{background:rgba(6,95,70,.5);color:var(--eml);border-color:var(--emd)}
+.pp.on.brit{background:rgba(159,18,57,.45);color:var(--rol);border-color:var(--rod)}
+.nb{display:flex;align-items:center;gap:4px;background:var(--b2);border:1px solid var(--bd);border-radius:8px;padding:4px}
+.na{padding:6px 8px;color:var(--dm);flex-shrink:0}.na:disabled{color:var(--fa)}
+.np{flex:1;padding:4px 8px;border-radius:6px;min-width:0}.np:active{background:var(--b3)}
+.nm{display:flex;align-items:center;gap:8px;margin-bottom:2px}
+.nn{color:var(--fa);font-size:10px;margin-left:auto}
+.nd{font-size:10px;color:var(--mu);text-transform:uppercase;letter-spacing:.5px}
+.nf{font-size:14px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tag{display:inline-block;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;padding:1px 7px;border-radius:4px;border:1px solid}
+.tg-reentry{background:rgba(4,120,87,.4);color:#a7f3d0;border-color:rgba(4,120,87,.6)}
+.tg-build{background:rgba(180,83,9,.4);color:#fde68a;border-color:rgba(180,83,9,.6)}
+.tg-peak{background:rgba(159,18,57,.4);color:#fecdd3;border-color:rgba(159,18,57,.6)}
+.tabs{display:flex;border-top:1px solid var(--bd)}
+.tb{flex:1;padding:11px;text-align:center;font-size:12px;font-weight:500;color:var(--mu);border-bottom:2px solid transparent}
+.tb.on{color:var(--tx);border-bottom-color:var(--ac)}
+.ct{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding-bottom:16px}
+.wh{padding:12px 14px 0}
+.wm{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:3px}
+.wn{font-size:15px;font-weight:600}
+.ws{color:var(--mu);font-size:12px}
+.rir{font-size:10px;font-weight:700;color:var(--acl);background:rgba(255,255,255,.05);border:1px solid var(--bd);border-radius:999px;padding:2px 8px}
+.peek{margin:10px 12px 0;background:var(--b2);border:1px solid var(--bd);border-radius:8px;overflow:hidden}
+.peekh{display:flex;align-items:center;gap:8px;padding:9px 12px;font-size:12px;color:var(--dm)}
+.peekh b{color:var(--tx)}
+.peekc{padding:0 12px 8px}
+.pkx{display:flex;justify-content:space-between;gap:10px;font-size:12px;padding:3px 0;border-top:1px solid var(--bds)}
+.pkn{color:var(--dm);flex:1;min-width:0}
+.pkg{color:var(--mu);font-size:10.5px}
+.pkr{color:var(--mu);font-variant-numeric:tabular-nums;white-space:nowrap}
+.cd{margin:12px;background:var(--b2);border:1px solid var(--bd);border-radius:8px;overflow:hidden}
+.ch{padding:10px 12px;border-bottom:1px solid var(--bd);display:flex;align-items:center;justify-content:space-between;gap:8px}
+.chm{font-size:10px;color:var(--mu);text-transform:uppercase;letter-spacing:.5px}
+.dnb{font-size:10px;padding:3px 8px;border-radius:4px;border:1px solid;font-weight:600;text-transform:uppercase;letter-spacing:.5px;display:inline-flex;align-items:center;gap:4px}
+.dnb-on{background:rgba(6,95,70,.4);color:var(--acl);border-color:var(--acd)}
+.dnb-off{background:transparent;color:var(--mu);border-color:var(--fa)}
+.dr{padding:7px 12px;border-bottom:1px solid var(--bd);display:flex;align-items:center;gap:6px;font-size:12px;color:var(--mu)}
+.dw{position:relative;display:inline-block}.dw input{position:absolute;inset:0;opacity:0;width:100%;height:100%}
+.dd{color:var(--dm);text-decoration:underline;text-decoration-style:dotted;text-underline-offset:2px}
+.ex{border-top:1px solid var(--bd);padding:10px 12px}.ex:first-child{border-top:0}
+.exn{font-size:15px;font-weight:500}
+.exg{font-size:11.5px;color:var(--mu);margin-top:1px}
+.exg .z{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:5px;vertical-align:middle}
+.z-db{background:#10b981}.z-mach{background:#60a5fa}.z-band{background:#fbbf24}.z-bw{background:#a1a1aa}
+.exp{font-size:12px;color:var(--mu);margin-top:2px}
+.exp .start{color:var(--acl)}
+.ss{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.pl{display:inline-flex;align-items:center;gap:4px;background:var(--b3);border:1px solid var(--bd);border-radius:4px;padding:3px 6px 3px 8px;font-size:12px}
+.pli{color:var(--mu);font-size:10px}.plw{font-weight:500}.plx{color:var(--mu)}.pld{color:var(--fa);padding:2px 4px;margin:-2px -4px -2px 2px}
+.pln{color:var(--mu);font-style:italic;max-width:90px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.qa{display:flex;gap:7px;align-items:center;margin-top:10px}
+.qa input{background:var(--b3);border:1px solid var(--bd);border-radius:4px;padding:8px;font-size:14px}
+.qnum{width:52px;text-align:center;flex-shrink:0}.qno{flex:1;min-width:0}
+.qbw{flex-shrink:0;padding:8px 8px;border:1px solid var(--bd);border-radius:4px;background:var(--b3);color:var(--mu);font-size:11px;font-weight:700}
+.qbw.on{background:var(--acd);color:#fff;border-color:var(--acd)}
+.bwon{color:var(--acl)}
+.qax{color:var(--mu)}
+.qag{background:var(--acd);color:#fff;font-size:14px;font-weight:600;padding:8px 14px;border-radius:4px}
+.qac{color:var(--mu);padding:4px}
+.ple{outline:1px solid var(--ac);outline-offset:1px;border-radius:4px}
+.sw{padding:10px 12px;text-align:center}
+.sb{font-size:12px;color:var(--mu);padding:6px 12px}
+.note-w{padding:0 12px 12px}
+.note-l{font-size:10px;color:var(--mu);text-transform:uppercase;letter-spacing:.5px;margin:8px 0 4px}
+.nti{width:100%;background:var(--b2);border:1px solid var(--bd);border-radius:8px;padding:9px;font-size:14px;min-height:42px;resize:vertical;font-family:inherit}
+.hi{display:block;width:calc(100% - 24px);margin:12px 12px 0;background:var(--b2);border:1px solid var(--bd);border-radius:8px;padding:11px}
+.hh{display:flex;justify-content:space-between;gap:8px;margin-bottom:6px}
+.hd2{font-weight:600}.hm{color:var(--mu);font-size:12px}
+.he{display:flex;justify-content:space-between;gap:8px;font-size:12px;padding:1px 0}
+.hen{color:var(--dm);flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.hes{color:var(--mu);font-size:11px}
+.pv{margin:12px 12px 0;background:var(--b2);border:1px solid var(--bd);border-radius:8px;overflow:hidden}
+.pvh{padding:8px 12px;border-bottom:1px solid var(--bd);display:flex;align-items:center;gap:8px;font-size:12px;color:var(--mu)}
+.pvcols{display:grid;grid-template-columns:1fr 1fr;gap:0}
+.pvc{padding:8px 10px}
+.pvc.ion{border-right:1px solid var(--bds)}
+.pvwho{font-size:10px;font-weight:700;letter-spacing:.06em;margin-bottom:5px}
+.pvc.ion .pvwho{color:var(--eml)}.pvc.brit .pvwho{color:var(--rol)}
+.pvf{font-size:12px;color:var(--tx);margin-bottom:6px;font-weight:500}
+.pvx{font-size:11px;color:var(--dm);padding:2px 0;display:flex;justify-content:space-between;gap:6px}
+.pvr{color:var(--mu);font-variant-numeric:tabular-nums;white-space:nowrap}
+.em2{padding:46px 16px;text-align:center;color:var(--mu)}
+.ic{display:inline-block;vertical-align:middle}
+.md{position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:50;display:flex;align-items:flex-end}
+.md.h{display:none}
+.mds{background:var(--bg);border-top:1px solid var(--bd);border-radius:12px 12px 0 0;width:100%;max-height:85vh;display:flex;flex-direction:column;padding-bottom:env(safe-area-inset-bottom)}
+.mh2{padding:12px 16px;border-bottom:1px solid var(--bd);display:flex;justify-content:space-between;align-items:center}
+.mt{font-weight:700}.mc{padding:8px;color:var(--dm)}
+.ml{flex:1;overflow-y:auto}
+.dlbody{padding:12px;display:flex;flex-direction:column;gap:8px}
+.dlta{min-height:200px;background:var(--b2);border:1px solid var(--bd);color:#fff;padding:10px;border-radius:6px;font-family:ui-monospace,monospace;font-size:11px;width:100%;resize:none}
+.pas{background:var(--em);color:#fff;font-weight:600;padding:10px;border-radius:4px;text-align:center}
+.dlbar{display:flex;gap:8px;padding:12px 12px 0}
+.dlbtn{flex:1;padding:9px;background:var(--b2);border:1px solid var(--bd);border-radius:8px;color:var(--dm);font-size:13px;text-align:center}
+.h{display:none!important}
+</style></head>
+<body class="p-ion">
+<div id="app">
+<div class="hd"><div class="ht" id="ht"></div><div class="tabs" id="tabs"></div></div>
+<div class="ct" id="ct"></div>
+<div class="ft" id="ft"></div>
+</div>
+<div id="md" class="md h"></div>
+<div id="err" style="display:none;position:fixed;inset:0;background:#000;color:#f88;font:12px monospace;padding:18px;overflow:auto;z-index:100;white-space:pre-wrap"></div>
+<script type="application/json" id="visits">[{"wk": 1, "v": 1, "tag": "reentry", "note": "", "ion": {"f": "Lower", "rir": "3 RIR", "e": [["DB / goblet squat", "3×12", "DB goblet / leg press", "db", ""], ["Lunge", "2×10/leg", "DB lunge", "db", ""], ["Carry", "2×30s", "DB / kettlebell carry", "db", ""], ["Leg extension / split squat", "2×12", "TG leg extension", "mach", ""]]}, "brit": {"f": "Glutes & abductors", "rir": "3 RIR", "e": [["Hip thrust", "3×10–12", "DB hip thrust on bench · SL if light", "db", ""], ["Romanian deadlift", "3×10–12", "DB RDL · single-leg as load caps", "db", ""], ["Hip abduction — RIR test", "3×15–20", "Band (seated/standing) + side-lying", "band", ""], ["Cable / band kickback", "2×12–15", "Band kickback", "band", ""], ["Side-lying abduction", "2×15–20", "Bodyweight / ankle DB", "bw", ""], ["Pallof press", "2×10/side", "Band", "band", ""], ["Stomach vacuum", "3×10s", "— (no kit)", "bw", ""]]}}, {"wk": 1, "v": 2, "tag": "reentry", "note": "", "ion": {"f": "Full-body", "rir": "3 RIR", "e": [["Vertical pull", "2×8–10", "Lat pulldown machine", "mach", "100 lb"], ["Lateral raise", "3×12–15", "DB", "db", "5 kg"], ["Horizontal press", "2×8–12", "DB bench press / chest-press mc", "db", ""], ["Biceps", "2×10–12", "DB curl", "db", ""], ["Triceps", "2×10–12", "DB overhead ext / band", "db", ""], ["Goblet / DB squat", "2×12", "DB goblet / leg press", "db", ""], ["Neck", "2 rounds", "Band / manual", "band", ""]]}, "brit": {"f": "Back & posture", "rir": "3 RIR", "e": [["Lat pulldown — RIR test", "3×10–12", "Lat pulldown machine", "mach", "≈45 lb (~2 RIR @15)"], ["Chest-supported row", "3×10–12", "DB chest-supported row (bench)", "db", "8 kg"], ["Straight-arm pulldown", "2×12–15", "DB pullover (bench)", "db", ""], ["Face pull", "3×15–20", "Band", "band", ""], ["Rear delt fly", "3×15–20", "DB fly, chest-supported", "db", "≈3 lb (light)"], ["Prone Y-T-W", "2×8–10 ea", "Bodyweight on bench · light DB", "bw", ""], ["Thoracic extension", "2×8", "Over bench edge / roller", "bw", ""], ["Neck", "1–2 rounds ×12–15", "Band / manual", "band", ""], ["Banded abduction", "2×20", "Band (seated/standing) + side-lying", "band", ""]]}}, {"wk": 1, "v": 3, "tag": "reentry", "note": "", "ion": {"f": "Arms & delts", "rir": "2 RIR · optional", "e": [["Lateral raise", "4×12–20", "DB", "db", "5 kg"], ["Curl", "3×8–12", "DB curl", "db", ""], ["Triceps", "3×10–15", "DB overhead ext / band", "db", ""], ["Rear delt", "3×15–20", "DB fly, chest-supported", "db", "2.5 kg"], ["Neck", "2 rounds", "Band / manual", "band", ""]]}, "brit": {"f": "Glutes & hamstrings", "rir": "3 RIR", "e": [["Romanian deadlift", "3×10–12", "DB RDL · single-leg as load caps", "db", ""], ["Hip abduction", "4×15–20", "Band (seated/standing) + side-lying", "band", ""], ["B-stance / SL glute bridge", "3×12–15", "Bench + DB / band", "db", ""], ["Cable kickback", "2×12–15", "Band kickback", "band", ""], ["Leg curl", "2×12–15", "TG leg curl", "mach", ""], ["Lat pullover", "2×12–15", "DB pullover (bench)", "db", ""], ["Dead bug", "2×8/side", "Bodyweight", "bw", ""]]}}, {"wk": 1, "v": 4, "tag": "reentry", "note": "", "ion": {"f": "Upper", "rir": "2–3 RIR", "e": [["Horizontal row", "3×8–12", "DB chest-supported row (bench)", "db", ""], ["Lateral raise", "4×12–15", "DB", "db", "5 kg"], ["Incline / overhead press", "3×8–12", "TG shoulder press / DB", "mach", ""], ["Rear delt", "3×15–20", "DB fly, chest-supported", "db", "2.5 kg"], ["Bayesian / DB curl", "3×8–12", "DB curl, incline (=Bayesian)", "db", ""], ["Triceps", "3×10–15", "DB overhead ext / band", "db", ""], ["Neck", "2 rounds", "Band / manual", "band", ""]]}, "brit": {"f": "Posture & upper", "rir": "3 RIR", "e": [["Cable / chest-supported row", "3×10–12", "DB chest-supported row (bench)", "db", "8 kg"], ["Rear delt fly", "3×15–20", "DB fly, chest-supported", "db", "≈3 lb (light)"], ["Face pull", "2×15–20", "Band", "band", ""], ["DB shoulder press", "2×10–12", "TG shoulder press / DB", "mach", ""], ["Lateral raise", "2×12–15", "DB", "db", ""], ["Glute bridge + banded abduction", "3×15–20", "Bench + DB / band", "db", ""], ["Plank", "2–3×30–45s", "Bodyweight", "bw", ""]]}}, {"wk": 2, "v": 1, "tag": "build", "note": "", "ion": {"f": "Lower", "rir": "1–2 RIR", "e": [["DB / goblet squat", "4×10–15", "DB goblet / leg press", "db", ""], ["Lunge", "2×8–12/leg", "DB lunge", "db", ""], ["Carry", "3×25–30s", "DB / kettlebell carry", "db", ""], ["Leg extension", "2×12–15", "TG leg extension", "mach", ""]]}, "brit": {"f": "Glutes & abductors", "rir": "2 RIR", "e": [["Hip thrust", "4×8–12", "DB hip thrust on bench · SL if light", "db", ""], ["Romanian deadlift", "3×8–12", "DB RDL · single-leg as load caps", "db", ""], ["Hip abduction", "4×15–20", "Band (seated/standing) + side-lying", "band", ""], ["Cable kickback", "2×12–15", "Band kickback", "band", ""], ["Side-lying abduction", "2×15–20", "Bodyweight / ankle DB", "bw", ""], ["Pallof press", "2×10/side", "Band", "band", ""], ["Stomach vacuum", "3×10s", "— (no kit)", "bw", ""]]}}, {"wk": 2, "v": 2, "tag": "build", "note": "", "ion": {"f": "Pull", "rir": "1–2 RIR", "e": [["Vertical pull", "4×6–10", "Lat pulldown machine", "mach", ""], ["Horizontal row", "3×8–12", "DB chest-supported row (bench)", "db", ""], ["Bayesian / DB curl", "3–4×8–12", "DB curl, incline (=Bayesian)", "db", ""], ["Face pull", "2×15", "Band", "band", ""], ["Rear delt", "3×15–20", "DB fly, chest-supported", "db", ""], ["Hammer curl", "2×10–12", "DB hammer curl", "db", ""], ["Neck", "2 rounds", "Band / manual", "band", ""]]}, "brit": {"f": "Back & posture", "rir": "2 RIR", "e": [["Lat pulldown", "4×8–12", "Lat pulldown machine", "mach", ""], ["Chest-supported row", "3×10–12", "DB chest-supported row (bench)", "db", ""], ["Straight-arm pulldown", "3×12–15", "DB pullover (bench)", "db", ""], ["Face pull", "3×15–20", "Band", "band", ""], ["Rear delt fly", "3×15–20", "DB fly, chest-supported", "db", ""], ["Prone Y-T-W", "2×10", "Bodyweight on bench · light DB", "bw", ""], ["Thoracic extension", "2×8", "Over bench edge / roller", "bw", ""], ["Neck", "2 rounds", "Band / manual", "band", ""], ["Banded abduction", "2×20", "Band (seated/standing) + side-lying", "band", ""]]}}, {"wk": 2, "v": 3, "tag": "build", "note": "", "ion": {"f": "Shoulders & arms", "rir": "1–2 RIR", "e": [["Vertical pull", "3×8–12", "Lat pulldown machine", "mach", ""], ["Lateral raise", "6–7×12–20", "DB", "db", ""], ["Rear delt", "4×15–25", "DB fly, chest-supported", "db", ""], ["EZ / DB curl", "4×8–12", "DB curl", "db", ""], ["Bayesian / cable curl", "3×10–15", "DB curl, incline (=Bayesian)", "db", ""], ["Triceps", "3–4×10–15", "DB overhead ext / band", "db", ""], ["Neck", "2 rounds", "Band / manual", "band", ""]]}, "brit": {"f": "Glutes & hamstrings", "rir": "2 RIR", "e": [["Romanian deadlift", "3×8–12", "DB RDL · single-leg as load caps", "db", ""], ["Hip abduction · 2 angles", "4×15–20", "Band (seated/standing) + side-lying", "band", ""], ["Single-leg hip thrust", "3×10–12", "DB hip thrust on bench · SL if light", "db", ""], ["Leg curl", "2×12–15", "TG leg curl", "mach", ""], ["Lat pullover", "3×12–15", "DB pullover (bench)", "db", ""], ["Dead bug", "2×8/side", "Bodyweight", "bw", ""]]}}, {"wk": 2, "v": 4, "tag": "build", "note": "", "ion": {"f": "Push", "rir": "1–2 RIR", "e": [["Horizontal press", "4×6–10", "DB bench press / chest-press mc", "db", ""], ["Lateral raise", "6×12–20", "DB", "db", ""], ["Incline / overhead press", "3×8–12", "TG shoulder press / DB", "mach", ""], ["Triceps pressdown", "3–4×10–15", "DB overhead ext / band", "db", ""], ["Overhead triceps", "3×10–15", "DB overhead ext / band", "db", ""]]}, "brit": {"f": "Posture & upper", "rir": "2 RIR", "e": [["Lat pulldown", "2×10–12", "Lat pulldown machine", "mach", ""], ["Cable row", "3×10–12", "DB chest-supported row (bench)", "db", ""], ["Rear delt fly", "4×15–20", "DB fly, chest-supported", "db", ""], ["Face pull", "2×15–20", "Band", "band", ""], ["DB shoulder press", "2×10–12", "TG shoulder press / DB", "mach", ""], ["Lateral raise", "3×12–15", "DB", "db", ""], ["Glute bridge + banded abduction", "4×15–20", "Bench + DB / band", "db", ""], ["Plank", "3×40s", "Bodyweight", "bw", ""]]}}, {"wk": 3, "v": 1, "tag": "peak", "note": "", "ion": {"f": "Full upper · reduced", "rir": "2–3 RIR", "e": [["Vertical pull", "2 sets", "Lat pulldown machine", "mach", ""], ["Row", "2 sets", "DB chest-supported row (bench)", "db", ""], ["Lateral raise", "3 sets", "DB", "db", ""], ["Press", "2 sets", "TG shoulder press / DB", "mach", ""], ["Curl", "2 sets", "DB curl", "db", ""], ["Triceps", "2 sets", "DB overhead ext / band", "db", ""], ["Neck", "1–2 rounds", "Band / manual", "band", ""]]}, "brit": {"f": "Glutes & back · reduced", "rir": "2–3 RIR", "e": [["Hip thrust", "2×10", "DB hip thrust on bench · SL if light", "db", ""], ["Hip abduction", "2×15–20", "Band (seated/standing) + side-lying", "band", ""], ["Lat pulldown", "2×10", "Lat pulldown machine", "mach", ""], ["Rear delt", "2×15–20", "DB fly, chest-supported", "db", ""]]}}, {"wk": 3, "v": 2, "tag": "peak", "note": "", "ion": {"f": "Delts & arms · pump", "rir": "no failure", "e": [["Lateral raise", "4×15–20", "DB", "db", ""], ["Rear delt", "3×15–20", "DB fly, chest-supported", "db", ""], ["Light pulldown / straight-arm", "2×12–15", "Pulldown machine", "mach", ""], ["Curl", "3×12–15", "DB curl", "db", ""], ["Triceps", "3×12–15", "DB overhead ext / band", "db", ""]]}, "brit": {"f": "Glutes & delts · pump", "rir": "no failure", "e": [["Glute bridge / hip thrust", "3×15–20", "DB hip thrust on bench · SL if light", "db", ""], ["Hip abduction", "4×20", "Band (seated/standing) + side-lying", "band", ""], ["Cable kickback", "2×15", "Band kickback", "band", ""], ["Straight-arm pulldown", "2×15", "DB pullover (bench)", "db", ""], ["Rear delt fly", "3×15–20", "DB fly, chest-supported", "db", ""], ["Band pull-apart", "2×20", "Band", "band", ""]]}}, {"wk": 3, "v": 3, "tag": "peak", "note": "Optional — Ion lower; Brit rests", "ion": {"f": "Lower · optional", "rir": "3 RIR", "e": [["Goblet squat", "2×12", "DB goblet / leg press", "db", ""], ["Lunge", "2×10/leg", "DB lunge", "db", ""], ["Carry", "2×20s", "DB / kettlebell carry", "db", ""]]}, "brit": {"f": "Rest", "rir": "", "e": [["Rest — optional walk + stretch", "—", "DB", "db", ""]]}}, {"wk": 3, "v": 4, "tag": "peak", "note": "Rest day", "ion": {"f": "Rest", "rir": "", "e": [["Off — optional walk + light stretch", "—", "Rest", "bw", ""]]}, "brit": {"f": "Rest", "rir": "", "e": [["Off — optional walk + light stretch", "—", "Rest", "bw", ""]]}}, {"wk": 3, "v": 5, "tag": "peak", "note": "Event primer", "ion": {"f": "Primer", "rir": "10–15 min", "e": [["Lateral raise", "2×15", "DB", "db", ""], ["Push-up or band press", "2×12", "Push-up / band", "bw", ""], ["Curl", "2×15", "DB curl", "db", ""], ["Triceps", "2×15", "DB overhead ext / band", "db", ""]]}, "brit": {"f": "Primer", "rir": "10–15 min", "e": [["Banded glute bridge", "2×20", "Bench + DB / band", "db", ""], ["Hip abduction", "2×20", "Band (seated/standing) + side-lying", "band", ""], ["Band pull-apart", "2×20", "Band", "band", ""], ["Light hip thrusts", "a few", "DB hip thrust on bench · SL if light", "db", ""]]}}]</script>
+<script type="application/json" id="baseline-data">{"logs":{"ion":{"1":{"date":"2026-06-26","exs":[{"n":"Vertical pull","s":[{"w":115,"r":9,"no":""},{"w":115,"r":9,"no":""}]},{"n":"Horizontal press","s":[{"w":12,"r":10,"no":"Weight in kg"},{"w":12,"r":12,"no":""}]},{"n":"Lateral raise","s":[{"w":4,"r":13,"no":"Weight in kg"},{"w":4,"r":13,"no":""},{"w":4,"r":13,"no":"Scaps felt a bit uneven or unstable"}]},{"n":"Biceps","s":[{"w":8,"r":10,"no":"Weight in kg"},{"w":8,"r":10,"no":"Might have been 1-2 rir whoops"}]},{"n":"Triceps","s":[{"w":8,"r":12,"no":"Weight in Kg"},{"w":8,"r":12,"no":"Around 8 had to press dumbbells together when the other reps were separate with them touching shoulders "}]}]},"2":{"date":"2026-06-28","exs":[{"n":"Goblet squat since skipped previous time","s":[{"w":12,"r":10,"no":"Weight in KG"},{"w":12,"r":12,"no":""}]},{"n":"Lateral raise","s":[{"w":4,"r":16,"no":"Weight kg"},{"w":4,"r":17,"no":""},{"w":4,"r":15,"no":""},{"w":4,"r":15,"no":"Maybe 2-3 RIR"}]},{"n":"Curl","s":[{"w":12,"r":11,"no":"1-2 RIR"},{"w":12,"r":10,"no":"Idk if 10 or 11"},{"w":12,"r":8,"no":""}]},{"n":"Triceps","s":[{"w":10,"r":6,"no":"Kg"},{"w":8,"r":11,"no":""},{"w":8,"r":10,"no":"Put dumbbells together on last one"}]}],"done":true}},"brit":{"1":{"date":"2026-06-26","exs":[{"n":"Lat pulldown — RIR test","s":[{"w":50,"r":10,"no":""},{"w":55,"r":5,"no":""},{"w":50,"r":5,"no":"Accidentally started second set at 55"},{"w":45,"r":10,"no":""}]},{"n":"Chest-supported row","s":[{"w":10,"r":10,"no":""},{"w":10,"r":10,"no":""},{"w":10,"r":10,"no":""}]},{"n":"Banded abduction","s":[{"w":null,"r":10,"no":"Black band side lying one with heels together ones with legs straight"},{"w":null,"r":10,"no":""},{"w":null,"r":10,"no":""},{"w":null,"r":10,"no":""}]},{"n":"Straight-arm pulldown","s":[{"w":5,"r":15,"no":"Weight in kg getting used to the movement"},{"w":5,"r":15,"no":""}]},{"n":"Prone Y-T-W","s":[{"w":2,"r":10,"no":""},{"w":2,"r":10,"no":""}]}]},"2":{"date":"2026-06-28","exs":[{"n":"Hip abduction","s":[{"w":null,"r":10,"no":"Black band"},{"w":null,"r":15,"no":""}]},{"n":"B-stance / SL glute bridge","s":[{"w":10,"r":7,"no":"Weight in kg"},{"w":8,"r":12,"no":"Perhaps 1-2 RIR"},{"w":6,"r":12,"no":""}]},{"n":"Lat pullover","s":[{"w":6,"r":15,"no":"Kg"},{"w":6,"r":12,"no":""}]},{"n":"Leg curl","s":[{"w":35,"r":12,"no":"Weight in lb switched to 30 halfway, was probably too much weight stopping here to not overcook hams"}]},{"n":"Dead bug","s":[{"w":null,"r":15,"no":""},{"w":null,"r":15,"no":""}]},{"n":"Cable kickback","s":[{"w":null,"r":15,"no":"Black band"},{"w":null,"r":90,"no":"The 90 stands for 90 seconds pumping instead of full ROM reps"}]},{"n":"Thoracic extension","s":[{"w":null,"r":15,"no":""}]}],"done":true}}},"skipped":{"ion":[],"brit":[]}}</script>
+<script>
+"use strict";
+try{
+var KEY="tl_joint_v1";
+var hasLocal=false; try{localStorage.setItem("t","1");localStorage.removeItem("t");hasLocal=true;}catch(e){}
+var VISITS=JSON.parse(document.getElementById("visits").textContent);
+var TOT=VISITS.length;
+var OTHER={ion:"brit",brit:"ion"};
+var NAME={ion:"Ion",brit:"Brit"};
+/* ---- FIREBASE (optional; fill config to enable cloud sync) ---- */
+var FIREBASE_CONFIG={apiKey:"AIzaSyAzWVm-gzqTL3NGQvEn_t2fnESbYcnqWss",authDomain:"workout-log-8de0d.firebaseapp.com",projectId:"workout-log-8de0d",storageBucket:"workout-log-8de0d.firebasestorage.app",messagingSenderId:"308252241477",appId:"1:308252241477:web:3afafa05d317ecc6087d2c"};
+var db=null,auth=null,cloudUser=null,cloudReady=false,cloudUnsub=null;
+function fbOK(){return typeof firebase!=="undefined"&&FIREBASE_CONFIG.apiKey.indexOf("PASTE")===-1;}
+function loadState(){
+  if(hasLocal){try{var r=localStorage.getItem(KEY);if(r){var p=JSON.parse(r);if(p&&p.logs)return p;}}catch(e){}}
+  try{var b=document.getElementById("baseline-data");if(b){var bp=JSON.parse(b.textContent);if(bp&&bp.logs)return bp;}}catch(e){}
+  return {logs:{ion:{},brit:{}},skipped:{ion:[],brit:[]}};
+}
+var ctimer=null;
+function saveState(st){
+  var blob=JSON.stringify({logs:st.logs,skipped:st.skipped});
+  if(hasLocal){try{localStorage.setItem(KEY,blob);}catch(e){}}
+  if(cloudReady&&db&&cloudUser){if(ctimer)clearTimeout(ctimer);ctimer=setTimeout(function(){
+    db.collection("joint").doc(KEY).set({logs:st.logs,skipped:st.skipped,updatedAt:Date.now()}).catch(function(){});},600);}
+}
+function cloudInit(){
+  if(!fbOK())return;
+  try{firebase.initializeApp(FIREBASE_CONFIG);auth=firebase.auth();db=firebase.firestore();
+    if(auth.setPersistence)auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL).catch(function(){});
+    auth.onAuthStateChanged(function(u){cloudUser=u;cloudReady=true;if(u){hideLogin();subCloud();}else showLogin();});
+  }catch(e){}
+}
+function subCloud(){
+  if(!db||!cloudUser)return; if(cloudUnsub){try{cloudUnsub();}catch(e){}}
+  cloudUnsub=db.collection("joint").doc(KEY).onSnapshot(function(doc){
+    if(!doc.exists){db.collection("joint").doc(KEY).set({logs:S.logs,skipped:S.skipped,updatedAt:Date.now()}).catch(function(){});return;}
+    var d=doc.data();if(!d||!d.logs)return;
+    var inc=JSON.stringify({logs:d.logs,skipped:d.skipped}),cur=JSON.stringify({logs:S.logs,skipped:S.skipped});
+    if(inc!==cur){S.logs=d.logs;S.skipped=d.skipped||S.skipped;if(hasLocal){try{localStorage.setItem(KEY,inc);}catch(e){}}render();}
+  },function(){});
+}
+function loginEl(){
+  var el=document.getElementById("fbL");if(el)return el;
+  el=document.createElement("div");el.id="fbL";
+  el.style.cssText="position:fixed;inset:0;background:rgba(0,0,0,.88);z-index:300;display:flex;align-items:center;justify-content:center;padding:24px";
+  el.innerHTML='<div style="background:#18181b;border:1px solid #27272a;border-radius:12px;padding:20px;width:100%;max-width:330px">'+
+   '<div style="font-weight:700;font-size:16px;margin-bottom:4px">Cloud sync</div>'+
+   '<div style="color:#71717a;font-size:12px;margin-bottom:14px">Log in once to sync across devices.</div>'+
+   '<input id="fbE" type="email" placeholder="email" autocomplete="username" style="width:100%;background:#27272a;border:1px solid #3f3f46;border-radius:6px;padding:10px;color:#fff;margin-bottom:8px">'+
+   '<input id="fbP" type="password" placeholder="password" autocomplete="current-password" style="width:100%;background:#27272a;border:1px solid #3f3f46;border-radius:6px;padding:10px;color:#fff;margin-bottom:10px">'+
+   '<div id="fbM" style="color:#fecdd3;font-size:12px;min-height:15px;margin-bottom:8px"></div>'+
+   '<button id="fbLB" style="width:100%;background:#047857;color:#fff;font-weight:600;padding:11px;border-radius:6px;margin-bottom:8px">Log in</button>'+
+   '<button id="fbSB" style="width:100%;background:transparent;border:1px solid #52525b;color:#a1a1aa;padding:9px;border-radius:6px;font-size:13px">First time? Create account</button></div>';
+  document.body.appendChild(el);
+  el.querySelector("#fbLB").addEventListener("click",function(){fbAuth(0);});
+  el.querySelector("#fbSB").addEventListener("click",function(){fbAuth(1);});
+  return el;
+}
+function showLogin(){loginEl().style.display="flex";}
+function hideLogin(){var e=document.getElementById("fbL");if(e)e.style.display="none";}
+function fbAuth(su){var e=(document.getElementById("fbE")||{}).value||"",p=(document.getElementById("fbP")||{}).value||"",m=document.getElementById("fbM");
+  if(!e||!p){if(m)m.textContent="Enter email and password.";return;}
+  var pr=su?auth.createUserWithEmailAndPassword(e,p):auth.signInWithEmailAndPassword(e,p);
+  pr.then(function(){if(m)m.textContent="";}).catch(function(x){if(m)m.textContent=(x&&x.message)||"Auth failed.";});
+}
+var loaded=loadState();
+var S={person:"ion",tab:"workout",vi:null,logs:loaded.logs||{ion:{},brit:{}},skipped:loaded.skipped||{ion:[],brit:[]},
+  es:null,peek:false,addEx:false,addExName:"",dlg:null,dlgTxt:"",dlgMsg:"",lastSave:0};
+if(!S.logs.ion)S.logs.ion={};if(!S.logs.brit)S.logs.brit={};
+if(!S.skipped.ion)S.skipped.ion=[];if(!S.skipped.brit)S.skipped.brit=[];
+function today(){var d=new Date();function p(n){return n<10?"0"+n:""+n;}return d.getFullYear()+"-"+p(d.getMonth()+1)+"-"+p(d.getDate());}
+function nice(s){var p=s.split("-");return new Date(+p[0],+p[1]-1,+p[2]).toLocaleDateString("en-US",{weekday:"short",month:"short",day:"numeric"});}
+function persist(){S.lastSave=Date.now();saveState({logs:S.logs,skipped:S.skipped});}
+function plogs(){return S.logs[S.person];}
+function psk(){return S.skipped[S.person];}
+function pos(person){var sk={};var a=S.skipped[person];for(var i=0;i<a.length;i++)sk[a[i]]=1;var lg=S.logs[person];
+  for(var k=0;k<TOT;k++){var l=lg[k];if(!(l&&l.done)&&!sk[k])return k;}return TOT;}
+function curI(){if(S.vi!==null&&S.vi>=0&&S.vi<TOT)return S.vi;return Math.min(pos(S.person),TOT-1);}
+function curV(){return VISITS[curI()];}
+function curSess(){return curV()[S.person];}
+var IC={cl:'<polyline points="15 18 9 12 15 6"/>',cr:'<polyline points="9 18 15 12 9 6"/>',
+ x:'<line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>',
+ ck:'<polyline points="20 6 9 17 4 12"/>',pl:'<line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>',
+ dn:'<path d="M6 9l6 6 6-6"/>',up2:'<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/>',
+ dn2:'<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>'};
+function ico(n,s){s=s||16;return '<svg class="ic" width="'+s+'" height="'+s+'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">'+IC[n]+'</svg>';}
+function esc(s){return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#39;");}
+function render(){
+  document.body.className="p-"+S.person;
+  document.getElementById("ht").innerHTML=htmlH();
+  document.getElementById("tabs").innerHTML=htmlT();
+  var ct=document.getElementById("ct");var sc=ct.scrollTop;ct.innerHTML=htmlC();ct.scrollTop=sc;
+  document.getElementById("ft").innerHTML=htmlF();
+  var m=document.getElementById("md");if(S.dlg){m.className="md";m.innerHTML=htmlDlg();}else{m.className="md h";m.innerHTML="";}
+}
+function vlabel(v){return "Wk"+v.wk+" · V"+v.v;}
+function htmlH(){
+  var idx=curI(),v=VISITS[idx],s=v[S.person],p=pos(S.person);
+  var h='<div class="hr1"><div class="htt">Joint Log';
+  if(S.lastSave){var t=new Date(S.lastSave),hh=t.getHours()%12||12,mm=t.getMinutes();h+='<span class="svb svb-ok">✓ '+hh+':'+(mm<10?"0":"")+mm+'</span>';}
+  h+='</div><button class="hps" data-a="exp">'+ico("up2",12)+' data</button></div>';
+  h+='<div class="pt">'+
+     '<button class="pp ion'+(S.person==="ion"?" on":"")+'" data-a="per" data-p="ion">ION</button>'+
+     '<button class="pp brit'+(S.person==="brit"?" on":"")+'" data-a="per" data-p="brit">BRIT</button></div>';
+  h+='<div class="nb"><button class="na" data-a="prev"'+(idx===0?" disabled":"")+'>'+ico("cl")+'</button>'+
+     '<button class="np" data-a="goto"><div class="nm"><span class="tag tg-'+v.tag+'">'+vlabel(v)+'</span>'+
+     '<span class="nd">'+esc(NAME[S.person])+'</span><span class="nn">'+(idx+1)+'/'+TOT+'</span></div>'+
+     '<div class="nf">'+esc(s.f)+'</div></button>'+
+     '<button class="na" data-a="next"'+(idx===TOT-1?" disabled":"")+'>'+ico("cr")+'</button></div>';
+  return h;
+}
+function htmlT(){
+  var t=[["workout","Workout"],["history","History"],["program","Plan"]];var o="";
+  for(var i=0;i<t.length;i++)o+='<button class="tb'+(S.tab===t[i][0]?" on":"")+'" data-a="tab" data-t="'+t[i][0]+'">'+t[i][1]+'</button>';
+  return o;
+}
+function htmlC(){return S.tab==="workout"?htmlW():S.tab==="history"?htmlHi():htmlPr();}
+function ztag(zone,txt){return '<span class="z z-'+zone+'"></span>'+esc(txt);}
+function exHist(name,idx){ // last logged for this person before idx
+  var lg=S.logs[S.person];
+  for(var k=idx-1;k>=0;k--){var l=lg[k];if(!l||!l.exs)continue;for(var i=0;i<l.exs.length;i++)if(l.exs[i].n===name&&l.exs[i].s&&l.exs[i].s.length)return l.exs[i].s;}
+  return null;
+}
+function htmlW(){
+  var idx=curI(),v=VISITS[idx],sess=v[S.person],oth=v[OTHER[S.person]];
+  var log=plogs()[idx];var sk={};var a=psk();for(var i=0;i<a.length;i++)sk[a[i]]=1;var isSk=!!sk[idx];
+  var h='<div class="wh"><div class="wm"><span class="tag tg-'+v.tag+'">'+vlabel(v)+'</span>'+
+        '<span class="wn">'+esc(sess.f)+'</span>'+(sess.rir?'<span class="rir">'+esc(sess.rir)+'</span>':'')+'</div>';
+  if(v.note)h+='<div class="ws" style="font-style:italic">'+esc(v.note)+'</div>';
+  h+='</div>';
+  // partner peek
+  h+='<div class="peek"><button class="peekh" data-a="peek" style="width:100%">'+ico(S.peek?"dn":"cr",13)+
+     '<span><b>'+esc(NAME[OTHER[S.person]])+'</b> this visit · '+esc(oth.f)+'</span></button>';
+  if(S.peek){h+='<div class="peekc">';for(var j=0;j<oth.e.length;j++){var e=oth.e[j];
+    h+='<div class="pkx"><div class="pkn">'+esc(e[0])+'<div class="pkg">'+ztag(e[3],e[2])+'</div></div><span class="pkr">'+esc(e[1])+'</span></div>';}
+    h+='</div>';}
+  h+='</div>';
+  // session card
+  h+='<div class="cd"><div class="ch"><span class="chm">'+esc(NAME[S.person])+' · '+(idx+1)+'/'+TOT+(isSk?' · skipped':'')+'</span>';
+  if(log)h+='<button class="dnb '+((log.done)?"dnb-on":"dnb-off")+'" data-a="done">'+((log.done)?ico("ck",11)+' done':'mark done')+'</button>';
+  h+='</div>';
+  var dv=(log&&log.date)?log.date:today();
+  h+='<div class="dr"><span>Logged</span><span class="dw"><input type="date" value="'+dv+'" data-a="date"><span class="dd">'+esc(nice(dv))+'</span></span></div>';
+  for(var k=0;k<sess.e.length;k++){var ex=sess.e[k];
+    var lgd=null;if(log&&log.exs)for(var m=0;m<log.exs.length;m++)if(log.exs[m].n===ex[0]){lgd=log.exs[m];break;}
+    h+=htmlEx(ex,lgd,idx);}
+  // extras
+  if(log&&log.exs){var tn={};for(var z=0;z<sess.e.length;z++)tn[sess.e[z][0]]=1;
+    var extras=log.exs.filter(function(e){return !tn[e.n];});
+    for(var x=0;x<extras.length;x++)h+=htmlEx([extras[x].n,"extra","DB","db",""],extras[x],idx);}
+  h+='</div>';
+  if(S.addEx){h+='<div style="margin:0 12px 12px;display:flex;gap:6px"><input id="addI" placeholder="extra exercise" value="'+esc(S.addExName)+'" style="flex:1;background:var(--b3);border:1px solid var(--bd);border-radius:4px;padding:8px"><button class="qag" data-a="addGo">add</button><button class="qac" data-a="addCx">'+ico("x",14)+'</button></div>';}
+  else h+='<div style="margin:0 12px 12px"><button class="sb" data-a="addOpen" style="width:100%;border:1px dashed var(--bd);border-radius:8px;color:var(--dm)">'+ico("pl",13)+' add extra exercise</button></div>';
+  if(!isSk&&!log)h+='<div class="sw"><button class="sb" data-a="skip">skip this for '+esc(NAME[S.person])+'</button></div>';
+  return h;
+}
+function htmlEx(ex,lg,idx){
+  var name=ex[0],reps=ex[1],gym=ex[2],zone=ex[3],load=ex[4];
+  var isEd=S.es&&S.es.n===name;
+  var h='<div class="ex"><div class="exn">'+esc(name)+'</div>';
+  h+='<div class="exg">'+ztag(zone,gym)+'</div>';
+  h+='<div class="exp">'+esc(reps)+(load?' · <span class="start">start: '+esc(load)+'</span>':'')+'</div>';
+  if(lg&&lg.s&&lg.s.length){h+='<div class="ss">';
+    for(var i=0;i<lg.s.length;i++){var st=lg.s[i];var ed=isEd&&S.es.i===i;
+      h+='<button class="pl'+(ed?' ple':'')+'" data-a="edit" data-e="'+esc(name)+'" data-i="'+i+'"><span class="pli">'+(i+1)+'</span><span class="plw">'+(st.w!=null?st.w:"BW")+'</span><span class="plx">×</span><span>'+st.r+'</span>'+(st.no?'<span class="pln">'+esc(st.no)+'</span>':'')+'<span class="pld" data-a="del" data-e="'+esc(name)+'" data-i="'+i+'">'+ico("x",11)+'</span></button>';}
+    h+='</div>';}
+  else{var his=exHist(name,idx);if(his){var t="";for(var k=0;k<his.length;k++){if(k)t+=", ";t+=(his[k].w!=null?his[k].w:"BW")+"×"+his[k].r;}h+='<div class="exp" style="color:var(--fa);font-style:italic">last: '+esc(t)+'</div>';}}
+  var dW="",dR="",dN="",dBW=false;
+  if(isEd&&S.es.i!=null&&lg){var es=lg.s[S.es.i];if(es){if(es.w==null)dBW=true;else dW=es.w;dR=es.r;dN=es.no||"";}}
+  else if(lg&&lg.s&&lg.s.length){var last=lg.s[lg.s.length-1];if(last.w==null)dBW=true;else dW=last.w;}
+  var eid='qa_'+name.replace(/[^a-zA-Z0-9]/g,'_');
+  h+='<div class="qa"><button class="qbw'+(dBW?' on':'')+'" id="'+eid+'_bw" data-a="bw" data-e="'+esc(name)+'">BW</button>'+
+     '<input type="text" inputmode="decimal" placeholder="'+(dBW?'BW':'wt')+'" class="qnum'+(dBW?' bwon':'')+'" id="'+eid+'_w" value="'+(dBW?'':dW)+'"'+(dBW?' readonly data-bw="1"':'')+' data-f="w" data-e="'+esc(name)+'">'+
+     '<span class="qax">×</span>'+
+     '<input type="text" inputmode="numeric" placeholder="reps" class="qnum" id="'+eid+'_r" value="'+dR+'" data-f="r" data-e="'+esc(name)+'">'+
+     '<input type="text" placeholder="notes" class="qno" id="'+eid+'_no" value="'+esc(dN)+'" data-f="no" data-e="'+esc(name)+'">';
+  if(isEd&&S.es.i!=null)h+='<button class="qag" data-a="save" data-e="'+esc(name)+'">save</button><button class="qac" data-a="cancel">'+ico("x",12)+'</button>';
+  else h+='<button class="qag" data-a="add" data-e="'+esc(name)+'">+</button>';
+  h+='</div></div>';
+  return h;
+}
+function htmlHi(){
+  var lg=S.logs[S.person];var arr=[];
+  for(var k in lg)if(lg.hasOwnProperty(k)){var l=lg[k];if(l&&l.exs&&l.exs.length)arr.push([+k,l]);}
+  arr.sort(function(a,b){return (b[1].date||"").localeCompare(a[1].date||"");});
+  var bar='<div class="dlbar"><button class="dlbtn" data-a="exp">'+ico("up2",14)+' Export</button><button class="dlbtn" data-a="imp">'+ico("dn2",14)+' Import</button></div>';
+  if(!arr.length)return bar+'<div class="em2">No sessions logged for '+esc(NAME[S.person])+' yet.</div>';
+  var o=bar;
+  for(var i=0;i<arr.length;i++){var vi2=arr[i][0],l=arr[i][1],v=VISITS[vi2];if(!v)continue;var sess=v[S.person];
+    var tot=0;for(var j=0;j<l.exs.length;j++)tot+=(l.exs[j].s?l.exs[j].s.length:0);
+    o+='<button class="hi" data-a="jump" data-i="'+vi2+'"><div class="hh"><div style="min-width:0;flex:1"><div class="hd2">'+esc(nice(l.date||today()))+'</div><div class="hm">'+esc(sess.f)+' · '+tot+' sets</div></div><span class="tag tg-'+v.tag+'">'+vlabel(v)+'</span></div>';
+    for(var k2=0;k2<l.exs.length;k2++){var e=l.exs[k2],ss="";if(e.s)for(var mm=0;mm<e.s.length;mm++){if(mm)ss+=", ";ss+=(e.s[mm].w!=null?e.s[mm].w+"×":"")+e.s[mm].r;}
+      o+='<div class="he"><span class="hen">'+esc(e.n)+'</span><span class="hes">'+esc(ss)+'</span></div>';}
+    o+='</button>';}
+  return o;
+}
+function htmlPr(){
+  var o="";var lastwk=0;
+  for(var i=0;i<TOT;i++){var v=VISITS[i];
+    if(v.wk!==lastwk){lastwk=v.wk;o+='<div style="padding:14px 14px 2px;font-weight:700;color:var(--acl)">Week '+v.wk+'</div>';}
+    o+='<div class="pv"><div class="pvh"><span class="tag tg-'+v.tag+'">'+vlabel(v)+'</span>'+(v.note?'<span style="font-style:italic">'+esc(v.note)+'</span>':'')+'</div><div class="pvcols">';
+    o+=pvcol(v.ion,"ion");o+=pvcol(v.brit,"brit");o+='</div></div>';
+  }
+  return o;
+}
+function pvcol(sess,who){
+  var h='<div class="pvc '+who+'"><div class="pvwho">'+NAME[who].toUpperCase()+(sess.rir?' · '+esc(sess.rir):'')+'</div><div class="pvf">'+esc(sess.f)+'</div>';
+  for(var i=0;i<sess.e.length;i++){var e=sess.e[i];h+='<div class="pvx"><span style="flex:1;min-width:0">'+esc(e[0])+'<br><span class="pkg">'+ztag(e[3],e[2])+'</span></span><span class="pvr">'+esc(e[1])+'</span></div>';}
+  return h+'</div>';
+}
+function htmlF(){return "";}
+function htmlDlg(){
+  var isE=S.dlg==="exp";
+  var h='<div class="mds"><div class="mh2"><div class="mt">'+(isE?"Export":"Import")+' data</div><button class="mc" data-a="closeD">'+ico("x",18)+'</button></div><div class="dlbody">';
+  if(isE)h+='<div style="color:var(--dm);font-size:12px">Copy this, then paste it into the baseline-data script tag in the .html to bake it in (auto-loads next open).</div>';
+  if(!isE)h+='<div style="color:#fde68a;font-size:12px">Paste exported JSON — replaces ALL data (both people).</div>';
+  if(S.dlgMsg)h+='<div style="color:var(--acl);font-size:12px">'+esc(S.dlgMsg)+'</div>';
+  h+='<textarea id="dta" class="dlta" '+(isE?'readonly':'placeholder="paste JSON"')+'>'+esc(S.dlgTxt)+'</textarea>';
+  h+=isE?'<button class="pas" data-a="copyD">Select all</button>':'<button class="pas" data-a="doImp">Replace data</button>';
+  return h+'</div></div>';
+}
+/* ---- actions ---- */
+function getF(name){var e='qa_'+name.replace(/[^a-zA-Z0-9]/g,'_');return {w:document.getElementById(e+'_w'),r:document.getElementById(e+'_r'),no:document.getElementById(e+'_no'),bw:document.getElementById(e+'_bw')};}
+function ensureLog(idx){var lg=plogs();if(!lg[idx])lg[idx]={date:today(),exs:[]};if(!lg[idx].exs)lg[idx].exs=[];return lg[idx];}
+function addSet(name,set){var idx=curI();var l=ensureLog(idx);var f=null;for(var i=0;i<l.exs.length;i++)if(l.exs[i].n===name){f=l.exs[i];break;}if(!f){f={n:name,s:[]};l.exs.push(f);}if(!f.s)f.s=[];f.s.push(set);S.vi=idx;persist();render();}
+function submit(name){var f=getF(name);if(!f.r||!f.r.value)return;var bw=f.w&&f.w.dataset.bw==="1";var w=bw?null:(f.w&&f.w.value!==""?parseFloat(f.w.value):null);var r=parseInt(f.r.value,10)||0;if(!r)return;addSet(name,{w:w,r:r,no:(f.no&&f.no.value)||""});}
+function saveEdit(name){if(!S.es)return;var f=getF(name);if(!f.r||!f.r.value)return;var bw=f.w&&f.w.dataset.bw==="1";var w=bw?null:(f.w&&f.w.value!==""?parseFloat(f.w.value):null);var r=parseInt(f.r.value,10)||0;if(!r)return;var l=plogs()[curI()];if(l)for(var i=0;i<l.exs.length;i++)if(l.exs[i].n===name&&l.exs[i].s[S.es.i]){l.exs[i].s[S.es.i]={w:w,r:r,no:(f.no&&f.no.value)||""};break;}S.es=null;persist();render();}
+function del(name,si){var idx=curI();var l=plogs()[idx];if(!l)return;var ne=[];for(var i=0;i<l.exs.length;i++){var e=l.exs[i];if(e.n!==name){ne.push(e);continue;}var ns=[];for(var j=0;j<e.s.length;j++)if(j!==si)ns.push(e.s[j]);if(ns.length)ne.push({n:e.n,s:ns});}if(!ne.length&&!l.note)delete plogs()[idx];else l.exs=ne;persist();render();}
+function toggleBW(name){var f=getF(name);if(!f.w)return;var on=f.w.dataset.bw==="1";if(on){f.w.dataset.bw="";f.w.readOnly=false;f.w.placeholder="wt";f.w.classList.remove("bwon");if(f.bw)f.bw.classList.remove("on");f.w.focus();}else{f.w.dataset.bw="1";f.w.value="";f.w.readOnly=true;f.w.placeholder="BW";f.w.classList.add("bwon");if(f.bw)f.bw.classList.add("on");if(f.r)f.r.focus();}}
+function expOpen(){S.dlgTxt=JSON.stringify({logs:S.logs,skipped:S.skipped});S.dlg="exp";S.dlgMsg="";render();}
+function doImp(){var ta=document.getElementById("dta");if(!ta)return;var t=ta.value||"";var st;try{var p=JSON.parse(t);}catch(e){S.dlgMsg="Bad JSON";render();return;}if(p&&p.logs)st=p;else if(p&&p.data&&p.data[KEY]){try{st=JSON.parse(p.data[KEY]);}catch(e){S.dlgMsg="Bad inner JSON";render();return;}}if(!st||!st.logs){S.dlgMsg="No logs found";render();return;}S.logs=st.logs;S.skipped=st.skipped||{ion:[],brit:[]};S.dlg=null;S.vi=null;persist();render();}
+document.addEventListener("click",function(ev){
+  if(ev.target.id==="md"){S.dlg=null;render();return;}
+  var t=ev.target;while(t&&t!==document.body){if(t.dataset&&t.dataset.a)break;t=t.parentNode;}
+  if(!t||!t.dataset||!t.dataset.a)return;var a=t.dataset.a;
+  if(a==="per"){S.person=t.dataset.p;S.es=null;render();}
+  else if(a==="tab"){S.tab=t.dataset.t;render();}
+  else if(a==="prev"){var i=curI();if(i>0){S.vi=i-1;S.es=null;render();}}
+  else if(a==="next"){var i=curI();if(i<TOT-1){S.vi=i+1;S.es=null;render();}}
+  else if(a==="goto"){S.vi=null;render();}
+  else if(a==="peek"){S.peek=!S.peek;render();}
+  else if(a==="done"){var l=plogs()[curI()];if(l){l.done=!l.done;persist();render();}}
+  else if(a==="bw"){toggleBW(t.dataset.e);}
+  else if(a==="add"){submit(t.dataset.e);}
+  else if(a==="save"){saveEdit(t.dataset.e);}
+  else if(a==="cancel"){S.es=null;render();}
+  else if(a==="edit"){ev.stopPropagation();S.es={n:t.dataset.e,i:+t.dataset.i};render();var f=getF(t.dataset.e);if(f.r){f.r.focus();}}
+  else if(a==="del"){ev.stopPropagation();del(t.dataset.e,+t.dataset.i);}
+  else if(a==="skip"){var idx=curI();if(psk().indexOf(idx)<0)psk().push(idx);S.vi=null;persist();render();}
+  else if(a==="jump"){S.tab="workout";S.vi=+t.dataset.i;render();}
+  else if(a==="addOpen"){S.addEx=true;S.addExName="";render();setTimeout(function(){var i=document.getElementById("addI");if(i)i.focus();},30);}
+  else if(a==="addCx"){S.addEx=false;render();}
+  else if(a==="addGo"){var i=document.getElementById("addI");var nm=(i&&i.value||"").trim();if(nm){var l=ensureLog(curI());var ex=false;for(var z=0;z<l.exs.length;z++)if(l.exs[z].n===nm)ex=true;if(!ex)l.exs.push({n:nm,s:[]});}S.addEx=false;S.vi=curI();persist();render();}
+  else if(a==="exp"){expOpen();}
+  else if(a==="imp"){S.dlg="imp";S.dlgTxt="";S.dlgMsg="";render();}
+  else if(a==="closeD"){S.dlg=null;render();}
+  else if(a==="copyD"){var ta=document.getElementById("dta");if(ta){ta.focus();ta.select();try{document.execCommand("copy");S.dlgMsg="Copied.";}catch(e){S.dlgMsg="Select + copy.";}render();}}
+  else if(a==="doImp"){doImp();}
+});
+document.addEventListener("input",function(e){if(e.target.id==="addI")S.addExName=e.target.value;});
+document.addEventListener("keydown",function(e){
+  if(e.key!=="Enter")return;var f=e.target.dataset&&e.target.dataset.f;if(!f)return;e.preventDefault();var nm=e.target.dataset.e;var ff=getF(nm);
+  if(f==="w"){if(ff.r)ff.r.focus();}else if(f==="r"){if(ff.no)ff.no.focus();}else{if(!ff.r||!ff.r.value){if(ff.r)ff.r.focus();return;}if(S.es&&S.es.n===nm)saveEdit(nm);else submit(nm);}
+});
+document.addEventListener("change",function(e){if(e.target&&e.target.dataset&&e.target.dataset.a==="date"){var l=ensureLog(curI());l.date=e.target.value;persist();render();}});
+render();
+setTimeout(cloudInit,50);
+}catch(err){var d=document.getElementById("err");if(d){d.style.display="block";d.textContent="ERROR\n\n"+(err&&err.stack||err);}}
+</script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+</body></html>

@@ -392,7 +392,7 @@ document.addEventListener("keydown",function(e){
 });
 document.addEventListener("change",function(e){if(e.target&&e.target.dataset&&e.target.dataset.a==="date"){var l=ensureLog(curI());l.date=e.target.value;persist();render();}});
 render();
-setTimeout(cloudInit,50);
+(function waitFB(n){if(typeof firebase!=="undefined"){cloudInit();}else if(n>0){setTimeout(function(){waitFB(n-1);},100);}})(80);
 }catch(err){var d=document.getElementById("err");if(d){d.style.display="block";d.textContent="ERROR\n\n"+(err&&err.stack||err);}}
 </script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>

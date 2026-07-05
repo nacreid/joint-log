@@ -18,6 +18,9 @@ input,textarea{background:none;border:0;color:inherit;font:inherit;outline:none}
 .htt{font-size:14px;font-weight:700;display:flex;align-items:center;gap:6px}
 .svb{font-size:10px;padding:2px 6px;border-radius:3px}
 .svb-ok{color:var(--acl);background:rgba(255,255,255,.05)}
+.svb-err{color:#fecdd3;background:rgba(159,18,57,.4)}
+.svb-sync{color:var(--dm);background:rgba(255,255,255,.05)}
+.svb-loc{color:var(--mu);background:rgba(255,255,255,.04)}
 .hps{font-size:10px;color:var(--mu);text-transform:uppercase;letter-spacing:.5px;padding:4px 6px}
 .pt{display:flex;gap:6px;margin-bottom:8px}
 .pp{flex:1;text-align:center;padding:9px;border-radius:8px;border:1px solid var(--bd);background:var(--b2);font-size:13px;font-weight:700;letter-spacing:.04em;color:var(--mu)}
@@ -145,27 +148,60 @@ function loadState(){
   return {logs:{ion:{},brit:{}},skipped:{ion:[],brit:[]}};
 }
 var ctimer=null;
+/* ---- sync status ---- */
+function setSync(state,msg){S.syncState=state;S.syncMsg=msg||"";if(state==="synced")S.lastSave=Date.now();paintSync();}
+function syncClass(){var s=S.syncState;return s==="synced"?"svb-ok":s==="error"?"svb-err":s==="syncing"?"svb-sync":"svb-loc";}
+function syncLabel(){var s=S.syncState;if(s==="synced"){var t=S.lastSave?new Date(S.lastSave):null,tm=t?((t.getHours()%12||12)+":"+(t.getMinutes()<10?"0":"")+t.getMinutes()):"";return "✓ synced "+tm;}if(s==="syncing")return "↻ syncing…";if(s==="error")return "⚠ sync error — tap retry";return "• local only";}
+function paintSync(){var el=document.getElementById("syncb");if(el){el.className="svb "+syncClass();el.textContent=syncLabel();}}
+function isTyping(){var a=document.activeElement;return !!(a&&(a.tagName==="INPUT"||a.tagName==="TEXTAREA"));}
+/* ---- merge: union of sessions, richer set-list wins; never deletes data ---- */
+function stable(o){if(o===null||typeof o!=="object")return JSON.stringify(o);if(Array.isArray(o))return "["+o.map(stable).join(",")+"]";return "{"+Object.keys(o).sort().map(function(k){return JSON.stringify(k)+":"+stable(o[k]);}).join(",")+"}";}
+function setCount(sess){var n=0;if(sess&&sess.exs)for(var i=0;i<sess.exs.length;i++)n+=(sess.exs[i].s?sess.exs[i].s.length:0);return n;}
+function mergeSession(x,y){
+  if(x&&!y)return x;if(y&&!x)return y;if(!x&&!y)return {exs:[]};
+  var xc=setCount(x),yc=setCount(y),first,second;
+  if(xc>yc){first=x;second=y;}else if(yc>xc){first=y;second=x;}else if(stable(x)<=stable(y)){first=x;second=y;}else{first=y;second=x;}
+  var map={},order=[];
+  function add(sess){if(!sess||!sess.exs)return;for(var i=0;i<sess.exs.length;i++){var e=sess.exs[i];if(!map[e.n]){map[e.n]={n:e.n,s:(e.s||[]).slice()};order.push(e.n);}else if((e.s||[]).length>map[e.n].s.length){map[e.n].s=(e.s||[]).slice();}}}
+  add(first);add(second);
+  var out={exs:order.map(function(n){return map[n];})};
+  var date=(first&&first.date)||(second&&second.date)||"";if(date)out.date=date;
+  if((x&&x.done)||(y&&y.done))out.done=true;
+  return out;
+}
+function mergeLogs(a,b){var out={ion:{},brit:{}};["ion","brit"].forEach(function(p){var A=(a&&a[p])||{},B=(b&&b[p])||{},keys={};Object.keys(A).forEach(function(k){keys[k]=1;});Object.keys(B).forEach(function(k){keys[k]=1;});Object.keys(keys).forEach(function(k){out[p][k]=mergeSession(A[k],B[k]);});});return out;}
+function mergeSkipped(a,b){var out={ion:[],brit:[]};["ion","brit"].forEach(function(p){var s={};((a&&a[p])||[]).concat((b&&b[p])||[]).forEach(function(i){s[i]=1;});out[p]=Object.keys(s).map(Number).sort(function(x,y){return x-y;});});return out;}
+/* ---- cloud write ---- */
+function pushCloud(){
+  if(!(cloudReady&&db&&cloudUser))return;
+  setSync("syncing");
+  db.collection("joint").doc(KEY).set({logs:S.logs,skipped:S.skipped,updatedAt:Date.now()})
+    .then(function(){setSync("synced");})
+    .catch(function(e){setSync("error",(e&&e.message)||"write failed");});
+}
 function saveState(st){
   var blob=JSON.stringify({logs:st.logs,skipped:st.skipped});
   if(hasLocal){try{localStorage.setItem(KEY,blob);}catch(e){}}
-  if(cloudReady&&db&&cloudUser){if(ctimer)clearTimeout(ctimer);ctimer=setTimeout(function(){
-    db.collection("joint").doc(KEY).set({logs:st.logs,skipped:st.skipped,updatedAt:Date.now()}).catch(function(){});},600);}
+  if(cloudReady&&db&&cloudUser){setSync("syncing");if(ctimer)clearTimeout(ctimer);ctimer=setTimeout(function(){pushCloud();},600);}
 }
 function cloudInit(){
   if(!fbOK())return;
   try{firebase.initializeApp(FIREBASE_CONFIG);auth=firebase.auth();db=firebase.firestore();
     if(auth.setPersistence)auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL).catch(function(){});
-    auth.onAuthStateChanged(function(u){cloudUser=u;cloudReady=true;if(u){hideLogin();subCloud();}else showLogin();});
+    auth.onAuthStateChanged(function(u){cloudUser=u;cloudReady=true;if(u){hideLogin();subCloud();}else{setSync("local");showLogin();}});
   }catch(e){}
 }
 function subCloud(){
   if(!db||!cloudUser)return; if(cloudUnsub){try{cloudUnsub();}catch(e){}}
+  setSync("syncing");
   cloudUnsub=db.collection("joint").doc(KEY).onSnapshot(function(doc){
-    if(!doc.exists){db.collection("joint").doc(KEY).set({logs:S.logs,skipped:S.skipped,updatedAt:Date.now()}).catch(function(){});return;}
-    var d=doc.data();if(!d||!d.logs)return;
-    var inc=JSON.stringify({logs:d.logs,skipped:d.skipped}),cur=JSON.stringify({logs:S.logs,skipped:S.skipped});
-    if(inc!==cur){S.logs=d.logs;S.skipped=d.skipped||S.skipped;if(hasLocal){try{localStorage.setItem(KEY,inc);}catch(e){}}render();}
-  },function(){});
+    if(!doc.exists){pushCloud();return;}
+    var d=doc.data();if(!d||!d.logs){pushCloud();return;}
+    var mLogs=mergeLogs(S.logs,d.logs),mSkip=mergeSkipped(S.skipped,d.skipped),mObj={logs:mLogs,skipped:mSkip};
+    var mS=stable(mObj),lS=stable({logs:S.logs,skipped:S.skipped}),cS=stable({logs:d.logs,skipped:d.skipped});
+    if(mS!==lS){S.logs=mLogs;S.skipped=mSkip;if(hasLocal){try{localStorage.setItem(KEY,JSON.stringify(mObj));}catch(e){}}if(isTyping())paintSync();else render();}
+    if(mS!==cS){pushCloud();}else{setSync("synced");}
+  },function(e){setSync("error",(e&&e.message)||"read failed");});
 }
 function loginEl(){
   var el=document.getElementById("fbL");if(el)return el;
@@ -193,7 +229,7 @@ function fbAuth(su){var e=(document.getElementById("fbE")||{}).value||"",p=(docu
 }
 var loaded=loadState();
 var S={person:"ion",tab:"workout",vi:null,logs:loaded.logs||{ion:{},brit:{}},skipped:loaded.skipped||{ion:[],brit:[]},
-  es:null,peek:false,addEx:false,addExName:"",dlg:null,dlgTxt:"",dlgMsg:"",lastSave:0};
+  es:null,peek:false,addEx:false,addExName:"",dlg:null,dlgTxt:"",dlgMsg:"",lastSave:0,syncState:"local",syncMsg:""};
 if(!S.logs.ion)S.logs.ion={};if(!S.logs.brit)S.logs.brit={};
 if(!S.skipped.ion)S.skipped.ion=[];if(!S.skipped.brit)S.skipped.brit=[];
 function today(){var d=new Date();function p(n){return n<10?"0"+n:""+n;}return d.getFullYear()+"-"+p(d.getMonth()+1)+"-"+p(d.getDate());}
@@ -225,7 +261,7 @@ function vlabel(v){return "Wk"+v.wk+" · V"+v.v;}
 function htmlH(){
   var idx=curI(),v=VISITS[idx],s=v[S.person],p=pos(S.person);
   var h='<div class="hr1"><div class="htt">Joint Log';
-  if(S.lastSave){var t=new Date(S.lastSave),hh=t.getHours()%12||12,mm=t.getMinutes();h+='<span class="svb svb-ok">✓ '+hh+':'+(mm<10?"0":"")+mm+'</span>';}
+  h+='<span class="svb '+syncClass()+'" id="syncb" data-a="resync">'+syncLabel()+'</span>';
   h+='</div><button class="hps" data-a="exp">'+ico("up2",12)+' data</button></div>';
   h+='<div class="pt">'+
      '<button class="pp ion'+(S.person==="ion"?" on":"")+'" data-a="per" data-p="ion">ION</button>'+
@@ -379,6 +415,7 @@ document.addEventListener("click",function(ev){
   else if(a==="addOpen"){S.addEx=true;S.addExName="";render();setTimeout(function(){var i=document.getElementById("addI");if(i)i.focus();},30);}
   else if(a==="addCx"){S.addEx=false;render();}
   else if(a==="addGo"){var i=document.getElementById("addI");var nm=(i&&i.value||"").trim();if(nm){var l=ensureLog(curI());var ex=false;for(var z=0;z<l.exs.length;z++)if(l.exs[z].n===nm)ex=true;if(!ex)l.exs.push({n:nm,s:[]});}S.addEx=false;S.vi=curI();persist();render();}
+  else if(a==="resync"){if(cloudUser){subCloud();}else if(fbOK()){showLogin();}}
   else if(a==="exp"){expOpen();}
   else if(a==="imp"){S.dlg="imp";S.dlgTxt="";S.dlgMsg="";render();}
   else if(a==="closeD"){S.dlg=null;render();}
